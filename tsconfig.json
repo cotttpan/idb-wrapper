@@ -1,0 +1,41 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "target": "es6",
+        "lib": [
+            "dom",
+            "es6"
+        ],
+        "declaration": true,
+        "outDir": "dist",
+        "strictNullChecks": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noEmitOnError": false,
+        "sourceMap": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipDefaultLibCheck": true,
+        "pretty": true,
+        // "diagnostics": true,
+        // "traceResolution": true,
+        "types": [
+            "mocha",
+            "node"
+        ]
+    },
+    "include": [
+        "src/**/*.ts",
+        "types/**/*.d.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ],
+    "awesomeTypescriptLoaderOptions": {
+        "useCache": true
+    }
+}

@@ -1,0 +1,86 @@
+{
+  "name": "@cotto/idb-wrapper",
+  "description": "indexeddb-wrapper",
+  "version": "0.0.1",
+  "author": "cotto",
+  "bugs": {
+    "url": "https://github.com/cotttpan/idb-wrapper/issues"
+  },
+  "dependencies": {
+    "@cotto/sq": "^0.1.2",
+    "@cotto/utils.ts": "^0.1.0",
+    "idb-schema": "^3.2.1"
+  },
+  "devDependencies": {
+    "@cotto/tslint-config": "^0.0.6",
+    "@types/mocha": "^2.2.42",
+    "@types/node": "^8.0.26",
+    "@types/power-assert": "^1.4.29",
+    "@types/sinon": "^2.3.3",
+    "@types/webpack": "^3.0.10",
+    "awesome-typescript-loader": "^3.2.3",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-power-assert": "^1.0.0",
+    "babili-webpack-plugin": "^0.1.2",
+    "espower-typescript": "^8.1.1",
+    "fake-indexeddb": "^2.0.3",
+    "jsdom": "^11.2.0",
+    "karma": "^1.7.1",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-jsdom-launcher": "^6.1.2",
+    "karma-mocha": "^1.3.0",
+    "karma-notify-reporter": "^1.0.1",
+    "karma-nyan-reporter": "^0.2.5",
+    "karma-safari-launcher": "^1.0.0",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^2.0.4",
+    "light-ts-loader": "^1.1.2",
+    "mocha": "^3.5.0",
+    "npm-run-all": "^4.1.1",
+    "power-assert": "^1.4.4",
+    "rimraf": "^2.6.1",
+    "sinon": "^3.2.1",
+    "ts-loader": "^2.3.4",
+    "tslint": "^5.7.0",
+    "typescript": "^2.5.2",
+    "webpack": "^3.5.5",
+    "webpack-dev-server": "^2.7.1",
+    "webpack-merge": "^4.1.0",
+    "webpack-notifier": "^1.5.0"
+  },
+  "files": [
+    "es",
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "indexeddb",
+    "typescript"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/cotttpan/idb-wrapper",
+  "main": "dist/index.js",
+  "jsnext:main": "es/index.js",
+  "module": "es/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cotttpan/idb-wrapper.git"
+  },
+  "scripts": {
+    "build": "run-p build:**",
+    "build:dist": "tsc",
+    "build:es": "tsc --module es2015 --outDir es",
+    "clean": "npm-run-all clean:** -p",
+    "clean:dist": "rimraf ./dist",
+    "clean:es": "rimraf ./es",
+    "clean:webpack": "rimraf ./public/**/*.bundle.*",
+    "lint": "tslint src/**/*.ts",
+    "start": "TEST_ENV=browser webpack-dev-server",
+    "test": "TEST_ENV=browser NODE_ENV=test karma start",
+    "test:mocha": "TEST_ENV=node NODE_ENV=test mocha",
+    "myprepublish": "run-s clean build",
+    "mypublish": "npm run myprepublish && npm publish --access=public"
+  }
+}
