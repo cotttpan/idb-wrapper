@@ -13,7 +13,7 @@ export type TrxTask<I, O> = Task<I, O, ExtraTrxContext>;
 
 export type TrxMode = 'r' | 'rw';
 
-export class Transaction<I = any, O = any> {
+export class TrxProcessor<I = any, O = any> {
     static parseTrxMode(mode: TrxMode) {
         return mode === 'r' ? 'readonly' : 'readwrite';
     }
@@ -32,7 +32,7 @@ export class Transaction<I = any, O = any> {
 
     pipe<R>(task: TrxTask<O, R>) {
         this._processor.pipe(task);
-        return this as any as Transaction<I, R>;
+        return this as any as TrxProcessor<I, R>;
     }
 
     execute(input: I, timeout = 5000) {
@@ -40,7 +40,7 @@ export class Transaction<I = any, O = any> {
             return new Promise<O>((resolve: Function, reject: any) => {
                 const db = this.db.originDB!;
                 const range = this.db.IDBKeyrange;
-                const mode = Transaction.parseTrxMode(this.mode);
+                const mode = TrxProcessor.parseTrxMode(this.mode);
                 const trx = db.transaction(this.storeNames, mode);
                 const ctx: ExtraTrxContext = { range, trx };
 
@@ -61,7 +61,7 @@ export class Transaction<I = any, O = any> {
     }
 
     clone() {
-        const instance = new Transaction<I, O>(this.db, this.storeNames, this.mode);
+        const instance = new TrxProcessor<I, O>(this.db, this.storeNames, this.mode);
         instance._processor = this._processor.clone();
         return instance;
     }

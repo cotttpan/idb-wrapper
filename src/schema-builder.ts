@@ -48,10 +48,10 @@ export class SchemaBuilder extends Schema {
                 const { stores, dropStores, indexes, dropIndexes, tasks } = currentSchema;
 
                 /* tasks */
-                const createStores = parallel(...stores.map(createStoreTaskFactory));
-                const delStores = parallel(...dropStores.map(deleteStoreTaskFactory({ buckup: tasks.length > 0 })));
-                const createIndexs = parallel(...indexes.map(createIndexTaskFactory));
-                const delIndexes = parallel(...dropIndexes.map(deleteIndexTaskFactory));
+                const createStores = parallel(...stores.map(factory.createStore));
+                const delStores = parallel(...dropStores.map(factory.deleteStore({ buckup: tasks.length > 0 })));
+                const createIndexs = parallel(...indexes.map(factory.createIndex));
+                const delIndexes = parallel(...dropIndexes.map(factory.deleteIndex));
                 const migraters = parallel(...tasks);
 
                 /* execute */
@@ -68,62 +68,65 @@ export class SchemaBuilder extends Schema {
     }
 }
 
-function createStoreTaskFactory(desc: Schema.StoreDescription): TrxTask<any, IDBObjectStore> {
-    return (_, ctx) => {
-        const store = ctx.trx.db.createObjectStore(desc.name, {
-            keyPath: desc.keyPath || undefined,
-            autoIncrement: desc.autoIncrement || false
-        });
+namespace factory {
+    export function createStore(desc: Schema.StoreDescription): TrxTask<any, IDBObjectStore> {
+        return (_, ctx) => {
+            const store = ctx.trx.db.createObjectStore(desc.name, {
+                keyPath: desc.keyPath || undefined,
+                autoIncrement: desc.autoIncrement || false
+            });
 
-        return ctx.next(store);
-    };
+            return ctx.next(store);
+        };
+    }
+
+    export function deleteStore(opts: { buckup: boolean }) {
+        return (desc: Schema.StoreDescription): TrxTask<any, any> => (_, ctx) => {
+            const storeName = desc.name;
+            const records: any[] = [];
+
+            const delStore = () => ctx.trx.db.deleteObjectStore(storeName);
+            const next = () => ctx.next({ [storeName]: records });
+            const end = bundle(delStore, next);
+
+            if (!opts.buckup) return end();
+
+            const store = ctx.trx.objectStore(storeName);
+            const req = store.openCursor();
+
+            req.addEventListener('success', function (this: IDBRequest) {
+                const cursor: IDBCursorWithValue = this.result;
+                if (cursor) {
+                    records.push(cursor.value);
+                    cursor.continue();
+                } else {
+                    end();
+                }
+            });
+        };
+    }
+
+    export function createIndex(desc: Schema.IndexDescription): TrxTask<any, IDBIndex> {
+        return (_, ctx) => {
+            const store = ctx.trx.objectStore(desc.storeName);
+            const idx = store.createIndex(desc.name, desc.field, {
+                unique: desc.unique,
+                multiEntry: desc.multiEntry
+            });
+
+            return ctx.next(idx);
+        };
+    }
+
+    export function deleteIndex(desc: Schema.IndexDescription): TrxTask<any, void> {
+        return (_, ctx) => {
+            const store = ctx.trx.objectStore(desc.storeName);
+            const idx = store.deleteIndex(desc.name);
+            return ctx.next(idx);
+        };
+    }
 }
 
-function deleteStoreTaskFactory(opts: { buckup: boolean }) {
-    return (desc: Schema.StoreDescription): TrxTask<any, any> => (_, ctx) => {
-        const storeName = desc.name;
-        const records: any[] = [];
-
-        const delStore = () => ctx.trx.db.deleteObjectStore(storeName);
-        const next = () => ctx.next({ [storeName]: records });
-        const end = bundle(delStore, next);
-
-        if (!opts.buckup) return end();
-
-        const store = ctx.trx.objectStore(storeName);
-        const req = store.openCursor();
-
-        req.addEventListener('success', function (this: IDBRequest) {
-            const cursor: IDBCursorWithValue = this.result;
-            if (cursor) {
-                records.push(cursor.value);
-                cursor.continue();
-            } else {
-                end();
-            }
-        });
-    };
-}
-
-function createIndexTaskFactory(desc: Schema.IndexDescription): TrxTask<any, IDBIndex> {
-    return (_, ctx) => {
-        const store = ctx.trx.objectStore(desc.storeName);
-        const idx = store.createIndex(desc.name, desc.field, {
-            unique: desc.unique,
-            multiEntry: desc.multiEntry
-        });
-
-        return ctx.next(idx);
-    };
-}
-
-function deleteIndexTaskFactory(desc: Schema.IndexDescription): TrxTask<any, void> {
-    return (_, ctx) => {
-        const store = ctx.trx.objectStore(desc.storeName);
-        const idx = store.deleteIndex(desc.name);
-        return ctx.next(idx);
-    };
-}
 
 function bundleLostData(lostdata: any[], ctx: TrxContext<any>) {
     const data = isEmpty(lostdata) ? null : Object.assign({}, ...lostdata);

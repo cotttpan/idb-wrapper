@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { Transaction, TrxTask, TrxMode } from './transaction';
+import { TrxProcessor, TrxTask, TrxMode } from './transaction';
 import { SchemaBuilder } from './schema-builder';
 import { bundle } from '@cotto/utils.ts';
 
@@ -108,6 +108,6 @@ export class IDBWrapper extends EventEmitter {
     }
 
     transaction<I = any, O = any>(storeNames: string | string[], mode: TrxMode, task: TrxTask<I, O>) {
-        return new Transaction<I, O>(this, storeNames, mode, task);
+        return new TrxProcessor<I, O>(this, storeNames, mode, task);
     }
 }
