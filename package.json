@@ -1,7 +1,7 @@
 {
   "name": "@cotto/idb-wrapper",
   "description": "indexeddb-wrapper",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "cotto",
   "bugs": {
     "url": "https://github.com/cotttpan/idb-wrapper/issues"
@@ -80,7 +80,8 @@
     "start": "TEST_ENV=browser webpack-dev-server",
     "test": "TEST_ENV=browser NODE_ENV=test karma start",
     "test:mocha": "TEST_ENV=node NODE_ENV=test mocha",
-    "myprepublish": "run-s clean build",
-    "mypublish": "npm run myprepublish && npm publish --access=public"
+    "myprepublish": "run-s clean build copy-vender-typings",
+    "mypublish": "npm run myprepublish && npm publish --access=public",
+    "copy-vender-typings": "xargs -n 1 cp -v src/*.d.ts <<< 'es dist'"
   }
 }
