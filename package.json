@@ -1,7 +1,7 @@
 {
   "name": "@cotto/idb-wrapper",
   "description": "indexeddb-wrapper",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "cotto",
   "bugs": {
     "url": "https://github.com/cotttpan/idb-wrapper/issues"
