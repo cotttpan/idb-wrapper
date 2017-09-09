@@ -1,20 +1,19 @@
 {
   "name": "@cotto/idb-wrapper",
   "description": "indexeddb-wrapper",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "cotto",
   "bugs": {
     "url": "https://github.com/cotttpan/idb-wrapper/issues"
   },
   "dependencies": {
     "@cotto/sq": "^0.1.2",
-    "@cotto/utils.ts": "^0.1.0",
-    "idb-schema": "^3.2.1"
+    "@cotto/utils.ts": "^0.1.2"
   },
   "devDependencies": {
     "@cotto/tslint-config": "^0.0.6",
-    "@types/mocha": "^2.2.42",
-    "@types/node": "^8.0.27",
+    "@types/mocha": "^2.2.43",
+    "@types/node": "^8.0.28",
     "@types/power-assert": "^1.4.29",
     "@types/sinon": "^2.3.3",
     "@types/webpack": "^3.0.10",
@@ -22,7 +21,6 @@
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-power-assert": "^1.0.0",
-    "babili-webpack-plugin": "^0.1.2",
     "espower-typescript": "^8.1.1",
     "fake-indexeddb": "^2.0.3",
     "jsdom": "^11.2.0",
@@ -80,8 +78,7 @@
     "start": "TEST_ENV=browser webpack-dev-server",
     "test": "TEST_ENV=browser NODE_ENV=test karma start",
     "test:mocha": "TEST_ENV=node NODE_ENV=test mocha",
-    "myprepublish": "run-s clean build copy-vender-typings",
-    "mypublish": "npm run myprepublish && npm publish --access=public",
-    "copy-vender-typings": "xargs -n 1 cp -v src/*.d.ts <<< 'es dist'"
+    "myprepublish": "run-s clean build",
+    "mypublish": "npm run myprepublish && npm publish --access=public"
   }
 }

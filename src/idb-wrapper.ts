@@ -63,7 +63,7 @@ export class IDBWrapper extends EventEmitter {
 
     open(schema: SchemaBuilder) {
         const self = this;
-        const req = this.IDBFactory.open(this.name, schema.version());
+        const req = this.IDBFactory.open(this.name, schema.version);
         req.onupgradeneeded = schema.build(this);
         req.onsuccess = onsuccess;
         req.onerror = onerror;
