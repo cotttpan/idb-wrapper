@@ -3,7 +3,7 @@
 ## Install
 
 ```
-yarn add idb-wrapper
+yarn add @cotto/idb-wrapper
 ```
 
 https://www.npmjs.com/package/@cotto/idb-wrapper
